@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "AgoraRtmKit",
     defaultLocalization: "en",
-    platforms: [.iOS(.v8)],
+    platforms: [.iOS(.v9)],
     products: [
         .library(
             name: "AgoraRtmKit",
@@ -16,8 +16,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "AgoraRtmKit",
-            url: "https://github.com/AgoraIO/AgoraRtm_iOS/releases/download/1.4.9/AgoraRtmKit.xcframework.zip",
-            checksum: "9e94aca2dc20ddc4d716f4b2e02f36a00dbd2320991ac51ac711bfe80bc6ccd3"
+            url: "https://github.com/AgoraIO/AgoraRtm_iOS/releases/download/1.4.9-special.1/AgoraRtmKit.xcframework.zip",
+            checksum: "5be68cbea4b0ce8e444dd1cd930167e42300f6340b60f3c0b6a3f1239d2f9b1d"
         )
     ]
 )
