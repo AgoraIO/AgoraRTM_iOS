@@ -1,17 +1,16 @@
-name: Swift
+name: Swift Package Resolve
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+    - '*'
 
 jobs:
   build:
-
     runs-on: macos-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Build Generic
+    - uses: actions/checkout@v3
+    - name: Build Generic 🛠
       run: xcodebuild -scheme AgoraRtmKit -destination generic/platform=iOS -destination "generic/platform=iOS Simulator"
+    - name: Resolve Package 🎉
+      run: swift package resolve
