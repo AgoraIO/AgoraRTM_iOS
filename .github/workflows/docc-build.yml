@@ -1,0 +1,68 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy DocC
+
+on:
+  # Runs on new releases
+  release:
+    types: [published]
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+env:
+  PACKAGE_NAME: AgoraRtmKit
+  BUILD_DEST: generic/platform=iOS
+  BUILD_PRODUCT: Debug-iphoneos
+
+jobs:
+  generate-docc:
+    name: Build DocC Archives
+    runs-on: macos-13
+    strategy:
+      matrix:
+        language: ['en', 'cn']
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+      - name: Switch Xcode 🔄
+        run: sudo xcode-select --switch /Applications/Xcode_14.3.app
+      - name: Clone DocC Helper 👭
+        uses: actions/checkout@v3
+        with:
+          repository: maxxfrazer/xcframework-to-docc
+          path: xcframework-to-docc
+      - name: Setup Xcode Project 🛠️
+        run: |
+          sh -e xcframework-to-docc/dl_framework.sh ${{ env.PACKAGE_NAME }}
+          sh -e xcframework-to-docc/move_header_files.sh ${{ env.PACKAGE_NAME }}.xcframework ${{ env.PACKAGE_NAME }}.docc
+          sh -e xcframework-to-docc/headers_to_xcodeproj.sh ${{ env.PACKAGE_NAME }} docc_builder
+      - name: Generate DocC Archive (${{ matrix.language }}) 🪄
+        run: xcodebuild -project docc_builder/${{ env.PACKAGE_NAME }}.xcodeproj docbuild -scheme ${{ env.PACKAGE_NAME }} -derivedDataPath /tmp/docbuild -destination ${{ env.BUILD_DEST }}
+      - name: Zip It Up (${{ matrix.language }}) 🤐
+        run: |
+          mv /tmp/docbuild/Build/Products/${{ env.BUILD_PRODUCT }}/${{ env.PACKAGE_NAME }}.doccarchive ${{ env.PACKAGE_NAME }}-${{ matrix.language }}.doccarchive
+          zip -r ${{ env.PACKAGE_NAME }}-${{ matrix.language }}.doccarchive.zip ${{ env.PACKAGE_NAME }}-${{ matrix.language }}.doccarchive
+      - name: Upload DocC Artifact (${{ matrix.language }}) ⬆️
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PACKAGE_NAME }}-${{ matrix.language }}.doccarchive.zip
+          path: ${{ env.PACKAGE_NAME }}-${{ matrix.language }}.doccarchive.zip
+      - name: Upload DocC Archive to GitHub release (${{ matrix.language }}) ⬆️
+        if: github.event.release
+        uses: svenstaro/upload-release-action@2.6.0
+        with:
+          file: ${{ env.PACKAGE_NAME }}-${{ matrix.language }}.doccarchive.zip
+          asset_name: ${{ env.PACKAGE_NAME }}-${{ matrix.language }}.doccarchive.zip
+          tag: ${{ github.ref_name }}
