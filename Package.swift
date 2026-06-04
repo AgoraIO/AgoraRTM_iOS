@@ -1,9 +1,9 @@
-// swift-tools-version: 5.6
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
     name: "AgoraRTM",
-    platforms: [.iOS(.v12)],
+    platforms: [.iOS(.v9)],
     products: [
         .library(
             name: "AgoraRTM",
