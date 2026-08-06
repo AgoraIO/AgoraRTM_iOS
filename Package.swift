@@ -11,13 +11,13 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/AgoraIO/AgoraInfra_iOS.git", from: "1.3.0")
+        .package(url: "https://github.com/AgoraIO/AgoraInfra_iOS.git", from: "1.3.5")
     ],
     targets: [
         .binaryTarget(
             name: "AgoraRtmKit",
-            url: "https://download.agora.io/rtm2/release/AgoraRtmKit.xcframework_2.2.8_ios.zip",
-            checksum: "9c4db9223cb23b43ee68ec6acaa1345b5dd4e06d7a7bd02ba02164bb512c7aaa"
+            url: "https://download.agora.io/rtm2/release/AgoraRtmKit.xcframework_2.3.0_ios.zip",
+            checksum: "219a8ed88ac44333fce772d76baa59661ec2c05e705e66f5a1d01a21078460cb"
         ),
         .target(
             name: "AgoraRtmInfra_iOS",
